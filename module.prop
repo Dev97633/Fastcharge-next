@@ -1,0 +1,6 @@
+id=fastcharge-next
+name=FastCharge Next
+version=1.0
+versionCode=100
+author=YourName
+description=Safely nudge charging current with thermal guard. Config at /sdcard/FastCharge/config.prop
