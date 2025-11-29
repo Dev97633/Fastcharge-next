@@ -6,7 +6,7 @@ We only provide support for the latest release of **FastCharge-Next**.
 | Version | Supported          |
 | ------- | ------------------ |
 | v1.x    | ✅ Supported       |
-| < v1.0  | ❌ Not supported   |
+| < v1.0  | ✅ Supported       |
 
 ---
 
@@ -15,10 +15,10 @@ If you discover a vulnerability or a potential security risk in **FastCharge-Nex
 
 Instead, please report it via **GitHub Security Advisories**:
 - Go to the repository's **Security → Report a vulnerability** section
-- Or directly contact the maintainer at: **[your email here]**
+- Or directly contact the maintainer at: **Devendar87502@gmail.com**
 
-We will:
-1. Acknowledge your report within **48 hours**  
+ I'll :
+1. Acknowledge your report within asap  
 2. Investigate and provide a fix or workaround  
 3. Credit you in the release notes (unless you prefer to remain anonymous)  
 
