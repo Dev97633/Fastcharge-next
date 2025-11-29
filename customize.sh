@@ -1,34 +1,33 @@
-#!/system/bin/sh
-# Magisk install-time script: seed default config
+#!/bin/sh
+set -u
+MODID=fastcharge-next
+MODDIR="$1"
+CFG_DIR="/data/adb/modules/$MODID"
+CFG_FILE="$CFG_DIR/config.prop"
 
-CFG_DIR="/sdcard/FastCharge"
-CFG_FILE="\$CFG_DIR/config.prop"
+ui_print() { echo "$1"; }
 
-mkdir -p "\$CFG_DIR" 2>/dev/null || true
+ui_print "Installing FastCharge Next..."
 
-if [ ! -f "\$CFG_FILE" ]; then
-  cat > "\$CFG_FILE" <<'CFG'
-# ===== FastCharge Next config =====
-# Units:
-#   *_MA   -> milliamps (mA)
-#   *_UV   -> microvolts (uV)
-
-# Target maximum charge current when cool (mA)
-CURRENT_MAX_MA=2000
-
-# Battery constant-charge current cap (mA). 0 = don't touch
-CC_CURRENT_MAX_MA=0
-
-# Battery constant-charge voltage max (uV). 0 = don't touch
-CONSTANT_VOLTAGE_MAX_UV=0
-
-# Temperature limits (°C)
-TEMP_HOT_C=42
-TEMP_COOL_C=39
-
-# Logging
-LOG_ENABLED=1
-CFG
+if [ ! -d "$CFG_DIR" ]; then
+  mkdir -p "$CFG_DIR" || ui_print "[WARN] Could not create $CFG_DIR"
 fi
 
-ui_print "FastCharge Next: config seeded at \$CFG_FILE"
+if [ ! -f "$CFG_FILE" ]; then
+  cat > "$CFG_FILE" <<'EOF'
+ENABLE=1
+TARGET_PATH=/sys/class/power_supply/battery/constant_charge_current_max
+DEFAULT_CURRENT=500000
+FAST_CURRENT=1000000
+POLL_NORMAL=5
+POLL_FAST=1
+THERMAL_LIMIT=45000
+LOG_MAX_KB=128
+LOG_FILE=/data/adb/modules/fastcharge-next/fastcharge.log
+EOF
+  ui_print "Seeded default config at $CFG_FILE"
+else
+  ui_print "Config already exists, leaving it."
+fi
+
+ui_print "Installation complete."
