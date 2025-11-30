@@ -1,7 +1,6 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "versionCode": 200,
-  "zipUrl": "https://github.com/Dev97633/Fastcharge-next/releases/download/v2.0.0/Fastcharge-next-v2.0.0.zip",
-  "changelog": "Full rewrite with safety improvements.",
-  "magisk_min": 24000
+  "zipUrl": "https://github.com/Dev97633/Fastcharge-next/releases/download/2.0.1/FastCharge-Next-2.0.1.zip",
+  "changelog": "• Improved stability\n• Optimized config handling\n• Minor fixes and enhancements"
 }
