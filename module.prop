@@ -1,6 +1,7 @@
 id=fastcharge-next
 name=FastCharge Next
-version=2.0.0
+version=2.0.1
 versionCode=200
 author=DEV
-description=Safely nudge charging current with thermal guard. Config at /sdcard/FastCharge/config.prop
+description=Safely nudge charging current with thermal guard. Config at /data/adb/fastcharge-next/config.prop
+updateJson=https://raw.githubusercontent.com/Dev97633/Fastcharge-next/main/update.json
