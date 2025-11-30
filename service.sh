@@ -1,9 +1,11 @@
 #!/bin/sh
 
-MODID=fastcharge-next
-MODDIR="/data/adb/modules/$MODID"
-CFG_FILE="$MODDIR/config.prop"
-LOG_FILE="$MODDIR/fastcharge.log"
+MODID="fastcharge-next"
+PERSIST_DIR="/data/adb/$MODID"
+CFG_FILE="$PERSIST_DIR/config.prop"
+LOG_FILE="$PERSIST_DIR/fastcharge.log"
+
+mkdir -p "$PERSIST_DIR"
 
 ENABLE=0
 TARGET_PATH=""
@@ -14,8 +16,8 @@ POLL_FAST=1
 THERMAL_LIMIT=45000
 
 log() {
-  ts=$(date +"%Y-%m-%d %H:%M:%S" 2>/dev/null || date)
-  printf "%s %s\n" "$ts" "$1" >> "$LOG_FILE" 2>/dev/null || true
+  ts=$(date +"%Y-%m-%d %H:%M:%S")
+  echo "$ts $1" >> "$LOG_FILE" 2>/dev/null || true
 }
 
 load_config() {
@@ -23,15 +25,16 @@ load_config() {
 }
 
 safe_write() {
-  [ -w "$1" ] && printf "%s" "$2" > "$1" 2>/dev/null
+  echo "$2" > "$1" 2>/dev/null
 }
 
 is_charging() {
   for p in /sys/class/power_supply/*/status; do
     [ -r "$p" ] || continue
     st=$(cat "$p")
-    [ "$st" = "Charging" ] && return 0
-    [ "$st" = "Full" ] && return 0
+    case "$st" in
+      "Charging"|"Full") return 0 ;;
+    esac
   done
   return 1
 }
@@ -39,16 +42,24 @@ is_charging() {
 load_config
 log "service: starting"
 
-if [ -z "$TARGET_PATH" ]; then
-  for f in /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/current_max; do
-    [ -w "$f" ] && TARGET_PATH="$f" && break
-  done
-fi
+# Better auto-detection
+for f in \
+  /sys/class/power_supply/*/constant_charge_current_max \
+  /sys/class/power_supply/*/current_max \
+  /sys/class/power_supply/*/charge_current \
+  /sys/class/power_supply/*/input_current_max \
+  /sys/class/power_supply/*/fcc* \
+  /sys/class/power_supply/battery/charge_control_limit_max;
+do
+  [ -w "$f" ] && TARGET_PATH="$f" && break
+done
 
 if [ ! -w "$TARGET_PATH" ]; then
-  log "service: no valid writable target found, exiting"
+  log "no writable charging node found"
   exit 0
 fi
+
+log "using node: $TARGET_PATH"
 
 prev_mode="normal"
 interval="$POLL_NORMAL"
@@ -62,11 +73,15 @@ while true; do
     continue
   fi
 
+  # Thermal check (skip invalid zones)
   temp_ok=1
   for t in /sys/class/thermal/thermal_zone*/temp; do
     [ -r "$t" ] || continue
-    tmp=$(cat "$t" | tr -cd '0-9')
-    [ "$tmp" != "" ] && [ "$tmp" -ge "$THERMAL_LIMIT" ] && temp_ok=0
+    tmp=$(cat "$t" 2>/dev/null)
+    case "$tmp" in
+      ''|*[!0-9]*) continue ;; # skip non-numeric
+    esac
+    [ "$tmp" -ge "$THERMAL_LIMIT" ] && temp_ok=0
   done
 
   if is_charging; then
@@ -82,7 +97,7 @@ while true; do
     mode="normal"
   fi
 
-  if [ "$mode" = "fast" ]; then interval="$POLL_FAST"; else interval="$POLL_NORMAL"; fi
+  [ "$mode" = "fast" ] && interval="$POLL_FAST" || interval="$POLL_NORMAL"
 
   if [ "$mode" != "$prev_mode" ]; then
     log "Mode: $prev_mode -> $mode"
