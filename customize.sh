@@ -1,18 +1,19 @@
 #!/bin/sh
 set -u
-MODID=fastcharge-next
-MODDIR="$1"
-CFG_DIR="/data/adb/modules/$MODID"
+
+MODID="fastcharge-next"
+MODDIR="$MODPATH"
+CFG_DIR="$MODDIR"
 CFG_FILE="$CFG_DIR/config.prop"
 
 ui_print() { echo "$1"; }
 
 ui_print "Installing FastCharge Next..."
 
-if [ ! -d "$CFG_DIR" ]; then
-  mkdir -p "$CFG_DIR" || ui_print "[WARN] Could not create $CFG_DIR"
-fi
+# Create module directory (it already exists, but safe)
+mkdir -p "$CFG_DIR"
 
+# Seed default config
 if [ ! -f "$CFG_FILE" ]; then
   cat > "$CFG_FILE" <<'EOF'
 ENABLE=1
@@ -27,7 +28,7 @@ LOG_FILE=/data/adb/modules/fastcharge-next/fastcharge.log
 EOF
   ui_print "Seeded default config at $CFG_FILE"
 else
-  ui_print "Config already exists, leaving it."
+  ui_print "Config already exists, skipping."
 fi
 
 ui_print "Installation complete."
