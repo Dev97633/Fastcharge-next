@@ -37,8 +37,7 @@ Boost your charging speed on rooted Android devices with this simple Magisk modu
 
 ## 🛠️ Compatibility
 - ✅ Magisk 24+
-- ✅ KernelSU
-- ✅ APatch
+- ✅ KernelSU (Compatible with **[latest Releases](../../releases/v2.0.1)**)
 - ✅ Android 8 – 14  
 - ❌ Non-rooted devices are **not supported**
 
