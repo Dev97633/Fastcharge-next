@@ -1,11 +1,22 @@
 #!/bin/sh
 
-MODDIR="/data/adb/modules/fastcharge-next"
-CFG_FILE="$MODDIR/config.prop"
+MODID="fastcharge-next"
+PERSIST="/data/adb/$MODID"
+CFG_FILE="$PERSIST/config.prop"
 
+# Reset charging node if possible
 if [ -f "$CFG_FILE" ]; then
   . "$CFG_FILE"
-  [ -w "$TARGET_PATH" ] && printf "%s" "$DEFAULT_CURRENT" > "$TARGET_PATH"
+
+  # Only reset if path exists AND is writable
+  if [ -n "$TARGET_PATH" ] && [ -w "$TARGET_PATH" ]; then
+    echo "$DEFAULT_CURRENT" > "$TARGET_PATH" 2>/dev/null
+  fi
 fi
 
-rm -rf "$MODDIR"
+# Remove persistent storage (config, logs)
+rm -rf "$PERSIST" 2>/dev/null
+
+# Do NOT delete $MODPATH or /data/adb/modules/…
+# Magisk/KernelSU will remove module folder itself.
+exit 0
