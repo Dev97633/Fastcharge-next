@@ -1,21 +1,37 @@
 #!/bin/sh
 
-MODID=fastcharge-next
-MODDIR="/data/adb/modules/$MODID"
-LOG_FILE="$MODDIR/fastcharge.log"
+MODID="fastcharge-next"
+PERSIST="/data/adb/$MODID"
+CFG_FILE="$PERSIST/config.prop"
+LOG_FILE="$PERSIST/fastcharge.log"
 
-log() {
-  ts=$(date +"%Y-%m-%d %H:%M:%S" 2>/dev/null || date)
-  printf "%s %s\n" "$ts" "$1" >> "$LOG_FILE" 2>/dev/null || true
-}
+mkdir -p "$PERSIST"
 
-mkdir -p "$MODDIR" 2>/dev/null || true
-
-if [ ! -f "$LOG_FILE" ]; then
-  : > "$LOG_FILE"
-  chmod 600 "$LOG_FILE"
+# Create default config if missing
+if [ ! -f "$CFG_FILE" ]; then
+  cat > "$CFG_FILE" <<'EOF'
+ENABLE=1
+TARGET_PATH=/sys/class/power_supply/battery/constant_charge_current_max
+DEFAULT_CURRENT=500000
+FAST_CURRENT=1000000
+POLL_NORMAL=5
+POLL_FAST=1
+THERMAL_LIMIT=45000
+LOG_MAX_KB=128
+LOG_FILE=/data/adb/fastcharge-next/fastcharge.log
+EOF
 fi
 
-log "post-fs-data: initialized"
+# Init log
+if [ ! -f "$LOG_FILE" ]; then
+  : > "$LOG_FILE"
+fi
+
+chmod 600 "$LOG_FILE"
+chmod 600 "$CFG_FILE"
+
+# Log entry
+ts=$(date +"%Y-%m-%d %H:%M:%S" 2>/dev/null || date)
+echo "$ts post-fs-data: initialized" >> "$LOG_FILE" 2>/dev/null
 
 exit 0
