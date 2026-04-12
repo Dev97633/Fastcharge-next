@@ -1,0 +1,24 @@
+#!/sbin/sh
+##########################################################################################
+# Magisk Module Installer Stub
+# This wrapper loads Magisk's installer utilities and installs this module zip.
+##########################################################################################
+
+umask 022
+
+# shellcheck disable=SC2034
+OUTFD="$2"
+ZIPFILE="$3"
+
+# Load Magisk installer utilities
+if [ -f /data/adb/magisk/util_functions.sh ]; then
+  . /data/adb/magisk/util_functions.sh
+elif [ -f /data/adb/ksu/bin/magisk/util_functions.sh ]; then
+  . /data/adb/ksu/bin/magisk/util_functions.sh
+else
+  echo "! Magisk util_functions.sh not found"
+  exit 1
+fi
+
+install_module
+exit 0
