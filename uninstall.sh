@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODDIR="/data/adb/modules/fastcharge-next"
+rm -rf /data/adb/$MODID
 CFG_FILE="$MODDIR/config.prop"
 
 if [ -f "$CFG_FILE" ]; then
