@@ -1,18 +1,25 @@
-#!/bin/sh
+#!/system/bin/sh
 
-# Universal installer (Magisk + KernelSU + APatch)
+##########################################################################################
+# FastCharge Next - Customize Script
+##########################################################################################
+
+# Magisk UI print
+ui_print() { echo "$1"; }
 
 MODID="fastcharge-next"
 MODDIR="/data/adb/modules/$MODID"
 CFG_FILE="$MODDIR/config.prop"
 
-echo "Installing FastCharge Next..."
+ui_print "- Setting up FastCharge Next..."
 
-
+# Ensure module directory exists
 if [ ! -d "$MODDIR" ]; then
-    mkdir -p "$MODDIR" || echo "[WARN] Failed to create $MODDIR"
+    mkdir -p "$MODDIR" 2>/dev/null
+    ui_print "- Created module directory"
 fi
 
+# Create default config if not exists
 if [ ! -f "$CFG_FILE" ]; then
 cat > "$CFG_FILE" <<'EOF'
 ENABLE=1
@@ -26,9 +33,12 @@ LOG_FILE=/data/adb/modules/fastcharge-next/fastcharge.log
 LOG_MAX_KB=128
 EOF
 
-    echo "Default config created at: $CFG_FILE"
+    ui_print "- Default config created"
 else
-    echo "Config already exists — keeping user settings."
+    ui_print "- Config already exists (preserved)"
 fi
 
-echo "Installation complete."
+# Set proper permissions (important)
+chmod 0644 "$CFG_FILE" 2>/dev/null
+
+ui_print "- Installation setup complete"
