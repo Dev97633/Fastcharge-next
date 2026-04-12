@@ -14,6 +14,9 @@ CFG_FILE="$PERSIST/config.prop"
 
 ui_print "- Setting up FastCharge Next..."
 
+mkdir -p "$PERSIST" 2>/dev/null
+chmod 755 "$PERSIST" 2>/dev/null
+
 # Ensure module directory exists
 if [ ! -d "$MODDIR" ]; then
     mkdir -p "$MODDIR" 2>/dev/null
