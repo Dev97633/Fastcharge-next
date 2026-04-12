@@ -1,24 +1,76 @@
 #!/sbin/sh
 ##########################################################################################
-# Magisk Module Installer Stub
-# This wrapper loads Magisk's installer utilities and installs this module zip.
+# FastCharge Next - Universal Installer (Magisk + KernelSU + Recovery)
 ##########################################################################################
+
+#################
+# Initialization
+#################
 
 umask 022
 
-# shellcheck disable=SC2034
+# UI print function (works in recovery + Magisk)
+ui_print() { echo "$1"; }
+
 OUTFD="$2"
 ZIPFILE="$3"
 
-# Load Magisk installer utilities
+ui_print "*******************************"
+ui_print "   FastCharge Next Installer   "
+ui_print "*******************************"
+
+#########################
+# Prepare Environment
+#########################
+
+# Mount /data if not already mounted
+mount /data 2>/dev/null
+
+# Set TMPDIR fallback
+[ -z "$TMPDIR" ] && TMPDIR=/dev/tmp
+
+#########################
+# Load util_functions.sh
+#########################
+
 if [ -f /data/adb/magisk/util_functions.sh ]; then
   . /data/adb/magisk/util_functions.sh
+  ui_print "- Magisk environment detected"
 elif [ -f /data/adb/ksu/bin/magisk/util_functions.sh ]; then
   . /data/adb/ksu/bin/magisk/util_functions.sh
+  ui_print "- KernelSU environment detected"
 else
-  echo "! Magisk util_functions.sh not found"
+  ui_print "*******************************"
+  ui_print "! Magisk/KernelSU not found"
+  ui_print "! Installation aborted"
+  ui_print "*******************************"
   exit 1
 fi
 
+#########################
+# Version Check (optional but safe)
+#########################
+
+if [ -n "$MAGISK_VER_CODE" ] && [ "$MAGISK_VER_CODE" -lt 20000 ]; then
+  ui_print "*******************************"
+  ui_print "! Please update Magisk (v20+)"
+  ui_print "*******************************"
+  exit 1
+fi
+
+#########################
+# Install Module
+#########################
+
+ui_print "- Installing module..."
 install_module
+
+#########################
+# Finish
+#########################
+
+ui_print "*******************************"
+ui_print "  Installation Complete ✅"
+ui_print "*******************************"
+
 exit 0
