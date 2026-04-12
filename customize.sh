@@ -9,7 +9,8 @@ ui_print() { echo "$1"; }
 
 MODID="fastcharge-next"
 MODDIR="/data/adb/modules/$MODID"
-CFG_FILE="/data/adb/modules/$MODID/config.prop"
+PERSIST="/data/adb/$MODID"
+CFG_FILE="$PERSIST/config.prop"
 
 ui_print "- Setting up FastCharge Next..."
 
