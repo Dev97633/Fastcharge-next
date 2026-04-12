@@ -5,7 +5,7 @@
 MODID="fastcharge-next"
 PERSIST="/data/adb/$MODID"
 CFG_FILE="$PERSIST/config.prop"
-LOG_FILE="${LOG_FILE:-$PERSIST/fastcharge.log}"
+LOG_FILE="$PERSIST/fastcharge.log"
 
 ENABLE=1
 TARGET_PATH=""
