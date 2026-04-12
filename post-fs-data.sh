@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODDIR="/data/adb/modules/fastcharge-next"
+MODDIR="/data/adb/$MODID"
 LOG_FILE="$MODDIR/fastcharge.log"
 
 
