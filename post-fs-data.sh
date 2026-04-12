@@ -1,10 +1,13 @@
-#!/bin/sh
+#!/system/bin/sh
 
-MODDIR="/data/adb/$MODID"
+MODID="fastcharge-next"
+PERSIST="/data/adb/$MODID"
+MODDIR="$PERSIST"
 LOG_FILE="$MODDIR/fastcharge.log"
 
 
 mkdir -p "$MODDIR" 2>/dev/null
+chmod 755 "$MODDIR" 2>/dev/null
 
 
 if [ ! -f "$LOG_FILE" ]; then
@@ -13,7 +16,7 @@ if [ ! -f "$LOG_FILE" ]; then
 fi
 
 
-ts=$(date +"%Y-%m-%d %H:%M:%S")
-printf "%s %s\n" "$ts" "post-fs-data: initialized" >> "$LOG_FILE"
+ts=$(date +"%Y-%m-%d %H:%M:%S" 2>/dev/null)
+printf "%s %s\n" "$ts" "post-fs-data: initialized" >> "$LOG_FILE" 2>/dev/null
 
 exit 0
