@@ -30,7 +30,7 @@ FAST_CURRENT=1000000
 POLL_NORMAL=5
 POLL_FAST=1
 THERMAL_LIMIT=45000
-LOG_FILE=/data/adb/modules/fastcharge-next/fastcharge.log
+LOG_FILE=/data/adb/fastcharge-next/fastcharge.log
 LOG_MAX_KB=128
 EOF
 
